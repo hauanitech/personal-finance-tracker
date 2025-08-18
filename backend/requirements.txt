@@ -1,12 +1,13 @@
 fastapi
 uvicorn
 sqlalchemy
+pydantic_settings
 psycopg2-binary
 
 ruff
 black
 
 python-multipart
-bcrypt
+bcrypt==3.2.0
 python-jose[cryptography]
 passlib[bcrypt]
