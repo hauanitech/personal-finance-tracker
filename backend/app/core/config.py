@@ -5,6 +5,8 @@ class Settings(BaseSettings):
     DB_URL: str
     SECRET_KEY: str
     ALGORITHM: str
+    SUPERUSER_USERNAME: str
+    SUPERUSER_PASSWORD: str
 
     class Config:
         env_file = ".env"

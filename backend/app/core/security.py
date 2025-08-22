@@ -32,6 +32,20 @@ def authenticate_user(username: str, password: str, db):
     return user
 
 
+def authenticate_superuser_or_user(username: str, password: str, db):
+    """Authenticate either superuser or regular user"""
+    # Check if it's superuser first
+    if username == settings.SUPERUSER_USERNAME and password == settings.SUPERUSER_PASSWORD:
+        return {"username": username, "id": "superuser", "is_superuser": True}
+    
+    # Otherwise, authenticate regular user
+    user = authenticate_user(username, password, db)
+    if user:
+        return {"username": user.username, "id": str(user.id), "is_superuser": False}
+    
+    return False
+
+
 def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=settings.ALGORITHM)
@@ -50,3 +64,18 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(minutes
     expire = datetime.utcnow() + expires_delta
     encode.update({"exp": expire})
     return jwt.encode(encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+def check_superuser(username: str, password: str):
+    if username != settings.SUPERUSER_USERNAME:
+        raise HTTPException(status_code=401, detail="incorrect username")
+    if password != settings.SUPERUSER_PASSWORD:
+        raise HTTPException(status_code=401, detail="incorrect password")
+    return {"data": "welcome back superman"}
+
+
+def get_superuser_dependency(current_user: Annotated[dict, Depends(get_current_user)]):
+    """Dependency to check if current user is superuser"""
+    if current_user.get("username") != settings.SUPERUSER_USERNAME:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    return current_user
