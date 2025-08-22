@@ -6,12 +6,12 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 
-from core.config import settings
-from api.users.models import Users
+from app.core.config import settings
+from app.api.users.models import Users
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_bearer = OAuth2PasswordBearer(tokenUrl="user/token")
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="api/user/token")
 
 
 def hash_password(password: str):
