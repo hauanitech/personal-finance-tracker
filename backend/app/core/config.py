@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     ALGORITHM: str
     SUPERUSER_USERNAME: str
     SUPERUSER_PASSWORD: str
+    SUPERUSER_ID: str
 
     class Config:
         env_file = ".env"

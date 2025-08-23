@@ -35,14 +35,17 @@ def authenticate_user(username: str, password: str, db):
 def authenticate_superuser_or_user(username: str, password: str, db):
     """Authenticate either superuser or regular user"""
     # Check if it's superuser first
-    if username == settings.SUPERUSER_USERNAME and password == settings.SUPERUSER_PASSWORD:
-        return {"username": username, "id": "superuser", "is_superuser": True}
-    
+    if (
+        username == settings.SUPERUSER_USERNAME
+        and password == settings.SUPERUSER_PASSWORD
+    ):
+        return {"username": username, "id": settings.SUPERUSER_ID, "is_superuser": True}
+
     # Otherwise, authenticate regular user
     user = authenticate_user(username, password, db)
     if user:
         return {"username": user.username, "id": str(user.id), "is_superuser": False}
-    
+
     return False
 
 
@@ -79,3 +82,19 @@ def get_superuser_dependency(current_user: Annotated[dict, Depends(get_current_u
     if current_user.get("username") != settings.SUPERUSER_USERNAME:
         raise HTTPException(status_code=403, detail="Insufficient permissions")
     return current_user
+
+
+def is_superuser(user: dict) -> bool:
+    """Helper function to check if a user is superuser"""
+    return user.get("id") == settings.SUPERUSER_ID
+
+
+def check_resource_access(
+    user: dict, resource_owner_id: str, resource_name: str = "resource"
+):
+    """Check if user can access a resource (owner or superuser)"""
+    if not is_superuser(user) and user.get("id") != resource_owner_id:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Access denied: You can only access your own {resource_name}",
+        )
