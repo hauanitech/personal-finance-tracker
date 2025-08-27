@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from app.database.core import Base
+from database.core import Base
 
 
 class Orders(Base):

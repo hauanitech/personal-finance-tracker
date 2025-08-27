@@ -4,11 +4,11 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session, joinedload
 
-from app.api.accounts.models import Accounts
-from app.api.accounts.schemas import AccountBase
-from app.api.orders.models import Orders
-from app.database.core import get_db
-from app.core.security import (
+from api.accounts.models import Accounts
+from api.accounts.schemas import AccountBase
+from api.orders.models import Orders
+from database.core import get_db
+from core.security import (
     get_current_user,
     get_superuser_dependency,
     check_resource_access,

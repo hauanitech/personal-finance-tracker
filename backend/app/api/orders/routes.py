@@ -5,11 +5,11 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.api.orders.schemas import OrderBase
-from app.api.orders.models import Orders
-from app.api.accounts.models import Accounts
-from app.database.core import get_db
-from app.core.security import get_current_user, get_superuser_dependency, is_superuser
+from api.orders.schemas import OrderBase
+from api.orders.models import Orders
+from api.accounts.models import Accounts
+from database.core import get_db
+from core.security import get_current_user, get_superuser_dependency, is_superuser
 
 router = APIRouter(prefix="/order", tags=["order"])
 
@@ -108,8 +108,8 @@ async def get_orders_by_account(
 ):
     """Get all orders for a specific account"""
     # Verify account access first
-    from app.api.accounts.models import Accounts
-    from app.core.security import check_resource_access
+    from api.accounts.models import Accounts
+    from core.security import check_resource_access
 
     account = db.query(Accounts).filter(Accounts.id == account_id).first()
     if not account:
